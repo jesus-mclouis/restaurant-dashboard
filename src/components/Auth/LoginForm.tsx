@@ -1,15 +1,18 @@
-"use client"
+"use client";
 // components/LoginForm.tsx
 import React, { useState } from "react";
 import InputField from "../Dashboard/InputField";
 import Button from "../Dashboard/Button";
+import { useRouter } from "next/navigation";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    // Handle login logic here
+  const router = useRouter();
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent form's default behavior
+    router.replace("/dashboard"); // Navigate to dashboard
   };
 
   return (
@@ -23,7 +26,7 @@ const LoginForm: React.FC = () => {
           Log in as Admin
         </p>
       </div>
-      <form className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4" onSubmit={handleLogin}>
         <InputField
           label="Email/ID"
           type="text"
@@ -38,7 +41,7 @@ const LoginForm: React.FC = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button text="Log In" onClick={handleLogin} />
+        <Button text="Log In" />
         <a href="#" className="text-right text-[#131313]">
           Forgot password?
         </a>

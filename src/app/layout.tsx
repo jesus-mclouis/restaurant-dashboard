@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 const fredoka = localFont({
-  src: "./fonts/Fredoka-Regular.ttf",
+  src: "../../public/fonts/Fredoka-Regular.ttf",
   variable: "--font-fredoka",
   weight: "400",
 });
