@@ -4,7 +4,7 @@
 
 
 body {
-    background-color: #FFFCE4;
+  @apply bg-[#FFFCE4] font-fredoka;
 }
 /* Hide scrollbar for WebKit browsers (Chrome, Safari) */
 .scrollbar-hide::-webkit-scrollbar {

@@ -25,9 +25,9 @@ const Sidebar: React.FC = () => {
   ];
 
   return (
-    <div className="overflow-auto scrollbar-hide flex flex-col h-screen max-h-screen w-[300px] border border-solid border-[#262525] border-opacity-50">
+    <div className="overflow-auto scrollbar-hide flex flex-col min-h-screen max-h-screen max-w-[300px] border border-solid border-[#262525] border-opacity-50">
       <LogoComponent />
-      <div className="flex flex-col mt-4 px-4 gap-3">
+      <div className="flex flex-col mt-4 px-7 gap-3">
         {menuItems.map((item) => (
           <SidebarItem
             key={item.label}
