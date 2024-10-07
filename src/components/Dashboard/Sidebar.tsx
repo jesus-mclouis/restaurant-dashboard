@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { usePathname, useRouter } from "next/navigation"; // Use usePathname
 
 import LogoComponent from "../atom/LogoComponent";
 import SidebarItem from "../atom/SidebarItem";
@@ -13,19 +14,25 @@ import PaymentIcon from "../atom/icons/payment/payment.atom";
 import HandShakeIcon from "../atom/icons/handshake/handshake.atom";
 
 const Sidebar: React.FC = () => {
-  const [selected, setSelected] = useState<string>("Dashboard");
+  const pathname = usePathname(); // Get the current route
+  const router = useRouter();
 
   const menuItems = [
-    { label: "Dashboard", icon: <DashboardIcon /> },
-    { label: "Orders", icon: <OrdersIcon /> },
-    { label: "Menu Dishes", icon: <HamburgerIcon />},
-    { label: "Customers", icon: <ProfileIcon />},
-    { label: "Payments", icon: <PaymentIcon />},
-    { label: "Support", icon: <HandShakeIcon />},
+    { label: "Dashboard", icon: <DashboardIcon />, route: "/dashboard" },
+    { label: "Orders", icon: <OrdersIcon />, route: "/order" },
+    { label: "Menu Dishes", icon: <HamburgerIcon />, route: "/menu" },
+    { label: "Customers", icon: <ProfileIcon />, route: "/customers" },
+    { label: "Payments", icon: <PaymentIcon />, route: "/payments" },
+    { label: "Support", icon: <HandShakeIcon />, route: "/support" },
   ];
 
+  // Handler to navigate to the respective route
+  const handleItemClick = (route: string) => {
+    router.push(route); // Programmatically navigate to the route
+  };
+
   return (
-    <div className="overflow-auto scrollbar-hide flex flex-col min-h-screen max-h-screen max-w-[300px] border border-solid border-[#262525] border-opacity-50">
+    <div className="overflow-auto scrollbar-hide flex flex-col max-w-[300px] border border-solid border-[#262525] border-opacity-50">
       <LogoComponent />
       <div className="flex flex-col mt-4 px-7 gap-3">
         {menuItems.map((item) => (
@@ -33,8 +40,9 @@ const Sidebar: React.FC = () => {
             key={item.label}
             label={item.label}
             icon={item.icon}
-            isSelected={selected === item.label}
-            onClick={() => setSelected(item.label)}
+            // Compare current route with the item's route to highlight the selected one
+            isSelected={pathname === item.route}
+            onClick={() => handleItemClick(item.route)}
           />
         ))}
       </div>

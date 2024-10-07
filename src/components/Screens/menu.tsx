@@ -1,9 +1,22 @@
-import React from 'react'
+// pages/dashboard.tsx
+"use client";
 
-const MenuPage = () => {
+import React from "react";
+import PageLayout from "./layout";
+import OrderDetailsTable from "../Dashboard/OrderDetailsTable";
+import OrderSummary from "../Dashboard/OrderSummary";
+import OrderStatisticsChart from "../Dashboard/OrderHistoryChart";
+
+const MenuPage: React.FC = () => {
   return (
-    <div>MenuPage</div>
-  )
-}
+    <PageLayout>
+      <div className="flex gap-4">
+        <OrderSummary />
+        <OrderStatisticsChart />
+      </div>
+      <OrderDetailsTable />
+    </PageLayout>
+  );
+};
 
-export default MenuPage
+export default MenuPage;

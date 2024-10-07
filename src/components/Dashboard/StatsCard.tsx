@@ -5,8 +5,8 @@ import Image from "next/image";
 interface StatsCardProps {
   title: string;
   count: number;
-  percentage: string;
-  isIncrease: boolean;
+  percentage?: string;
+  isIncrease?: boolean;
   description: string;
   iconSrc: string;
   backgroundStyle: string;
@@ -21,13 +21,15 @@ const StatsCard: React.FC<StatsCardProps> = ({
   iconSrc,
   backgroundStyle,
 }) => {
+  // Conditional border styles for "Total Revenue"
+  const isTotalRevenue = title === "Total Revenue";
+
   return (
     <div
-      className={`rounded-lg p-4 flex justify-between items-center ${backgroundStyle} border`}
+      className={`rounded-lg p-4 flex justify-between items-center ${backgroundStyle} border w-max`}
       style={{
-        borderImageSource:
-          "linear-gradient(173.17deg, rgba(17, 17, 17, 0.78) 78%, rgba(40, 40, 40, 0) 0%)",
-        borderWidth: "0.38px",
+        borderColor: isTotalRevenue ? "#075C29" : "rgba(17, 17, 17, 0.78)",
+        borderWidth: isTotalRevenue ? "1px" : "0.38px",
         borderStyle: "solid",
         boxShadow: "0px 20px 60px rgba(165, 165, 165, 0.2)",
       }}
@@ -48,13 +50,15 @@ const StatsCard: React.FC<StatsCardProps> = ({
       </div>
 
       {/* Right Section */}
-      <div className="w-16 h-16">
+      <div className={`${isTotalRevenue ? "relative w-16 h-16" : "relative w-16 h-16"}`}>
         <Image
           src={iconSrc}
           alt={`${title} icon`}
-          width={64}
-          height={64}
-          className="object-contain"
+          width={`${isTotalRevenue ? 200 : 100}`}
+          height={`${isTotalRevenue ? 200 : 100}`}
+          className={`object-contain ${
+            isTotalRevenue ? "" : "absolute -bottom-9"
+          }`}
         />
       </div>
     </div>

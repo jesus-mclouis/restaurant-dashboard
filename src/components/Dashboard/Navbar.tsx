@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 import { FiSun, FiBell } from 'react-icons/fi';
 
@@ -15,7 +16,8 @@ const Navbar: React.FC = () => {
                 <FiSun className="text-xl" />
                 <FiBell className="text-xl" />
                 <div className="flex items-center space-x-2">
-                    <img src="/user-avatar.jpg" alt="User Avatar" className="w-10 h-10 rounded-full" />
+                    {/* <img src="/user-avatar.jpg" alt="User Avatar" className="w-10 h-10 rounded-full" /> */}
+                    <Image src="/images/icon-profile.svg" alt="User Avatar" width={48} height={48} className='rounded-full border-4 border-solid border-[#D9D9D9]' />
                     <span>Samuel K.</span>
                 </div>
             </div>
