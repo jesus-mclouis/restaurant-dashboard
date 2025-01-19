@@ -5,7 +5,7 @@ const Header: React.FC = () => {
   return (
     <header className="flex justify-between items-center px-4 py-2 bg-[#FFFBEC]">
       <div className="flex items-center">
-        <img src="/path-to-logo.png" alt="Logo" className="w-10 h-10 mr-2" />
+        <img src="..\images\LEAD Logo7 1.png" alt="Logo" className="w-10 h-10 mr-2" />
         <h1 className="text-2xl font-medium text-[#131313]">
           Loop Eats and Deliveries
         </h1>

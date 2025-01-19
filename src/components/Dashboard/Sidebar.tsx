@@ -1,11 +1,12 @@
 "use client";
 
 import React from "react";
-import { usePathname, useRouter } from "next/navigation"; // Use usePathname
+import { usePathname, useRouter } from "next/navigation";
 
 import LogoComponent from "../atom/LogoComponent";
 import SidebarItem from "../atom/SidebarItem";
-import AddManagerButton from "../atom/AddManagerButton";
+import AddRestaurantButton from "@/components/atom/AddRestaurantButton";
+import AddManagerButton from "@/components/atom/AddManagerButton"; // Import the AddManagerButton
 import DashboardIcon from "../atom/icons/dashboard/dashboard.atom";
 import OrdersIcon from "../atom/icons/order/order.atom";
 import HamburgerIcon from "../atom/icons/hamburger/hamburger.atom";
@@ -14,7 +15,7 @@ import PaymentIcon from "../atom/icons/payment/payment.atom";
 import HandShakeIcon from "../atom/icons/handshake/handshake.atom";
 
 const Sidebar: React.FC = () => {
-  const pathname = usePathname(); // Get the current route
+  const pathname = usePathname();
   const router = useRouter();
 
   const menuItems = [
@@ -26,27 +27,34 @@ const Sidebar: React.FC = () => {
     { label: "Support", icon: <HandShakeIcon />, route: "/support" },
   ];
 
-  // Handler to navigate to the respective route
   const handleItemClick = (route: string) => {
-    router.push(route); // Programmatically navigate to the route
+    router.push(route);
   };
 
   return (
     <div className="overflow-auto scrollbar-hide flex flex-col max-w-[300px] border border-solid border-[#262525] border-opacity-50">
+      {/* Logo Section */}
       <LogoComponent />
+
+      {/* Menu Items */}
       <div className="flex flex-col mt-4 px-7 gap-3">
         {menuItems.map((item) => (
           <SidebarItem
             key={item.label}
             label={item.label}
             icon={item.icon}
-            // Compare current route with the item's route to highlight the selected one
             isSelected={pathname === item.route}
             onClick={() => handleItemClick(item.route)}
           />
         ))}
       </div>
-      <div className="mt-auto px-6 mb-4 flex items-center cursor-pointer">
+
+      {/* Add Buttons Section */}
+      <div className="mt-auto px-6 mb-4 flex flex-col gap-3">
+        {/* Add Restaurant Button */}
+        <AddRestaurantButton />
+
+        {/* Add Manager Button */}
         <AddManagerButton />
       </div>
     </div>
