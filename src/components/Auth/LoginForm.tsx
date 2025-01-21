@@ -5,28 +5,29 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 
 const AuthForm: React.FC = () => {
-  const [formState, setFormState] = useState<"login" | "signup" | "reset" | "otp" | "new-password">(
-    "login"
-  );
+  const [formState, setFormState] = useState<
+    "login" | "signup" | "reset" | "otp" | "new-password"
+  >("login");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [cpassword, setConfirmPassword] = useState("");
+  const [cpassword, setConfirmPassword] = useState(""); // cpassword state
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [role, setRole] = useState(""); // Role state
   const [otp, setOtp] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [otpTimer, setOtpTimer] = useState(0); // Timer for OTP expiration
-  const [showPassword, setShowPassword] = useState(false); // Toggle for password
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle for confirm password
+  const [otpTimer, setOtpTimer] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const router = useRouter();
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (otpTimer > 0) {
-      timer = setTimeout(() => setOtpTimer((prev) => prev - 1), 1000); // Decrease timer every second
+      timer = setTimeout(() => setOtpTimer((prev) => prev - 1), 1000);
     }
     return () => clearTimeout(timer);
   }, [otpTimer]);
@@ -37,24 +38,59 @@ const AuthForm: React.FC = () => {
 
     try {
       if (formState === "login") {
-        if (!email || !password) {
-          setError("Email and Password are required.");
+        if (!email || !password || !role) {
+          setError("Email, Password, and Role are required.");
           return;
         }
 
         setLoading(true);
-        const response = await axios.post("/api/auth/restaurant-login", { email, password });
+        const response = await axios.post("/api/auth/restaurant-login", {
+          email,
+          password,
+          role,
+        });
 
         const { access_token, refresh_token } = response.data;
 
-      document.cookie = `refreshToken=${refresh_token}; path=/; HttpOnly; Secure; SameSite=Strict;`;
-      localStorage.setItem("accessToken", access_token); // Store access token temporarily
+        document.cookie = `refreshToken=${refresh_token}; path=/; HttpOnly; Secure; SameSite=Strict;`;
+        localStorage.setItem("accessToken", access_token);
         alert("Login successful!");
-        console.log(access_token, refresh_token)
         router.replace("/dashboard");
       } else if (formState === "signup") {
-        if (!email || !password || !firstName || !lastName || !phoneNumber || password !== cpassword) {
-          setError("All fields are required, and passwords must match.");
+        // Debug: Check all fields in the console
+        console.log({
+          firstName,
+          lastName,
+          email,
+          password,
+          phoneNumber,
+          role,
+          cpassword,
+        });
+
+        // Validation for signup form
+        if (
+          !email ||
+          !password ||
+          !firstName ||
+          !lastName ||
+          !phoneNumber ||
+          !role ||
+          !cpassword ||
+          typeof cpassword !== "string" ||
+          password !== cpassword
+        ) {
+          // Provide detailed error messages
+          if (!email) setError("Email is required.");
+          else if (!password) setError("Password is required.");
+          else if (!firstName) setError("First Name is required.");
+          else if (!lastName) setError("Last Name is required.");
+          else if (!phoneNumber) setError("Phone Number is required.");
+          else if (!role) setError("Role cannot be empty.");
+          else if (!cpassword || typeof cpassword !== "string")
+            setError("Confirm Password must be a string and cannot be empty.");
+          else if (password !== cpassword)
+            setError("Passwords do not match.");
           return;
         }
 
@@ -65,11 +101,11 @@ const AuthForm: React.FC = () => {
           email,
           password,
           phoneNumber,
-          cpassword
+          cpassword,
+          role
         });
         alert("Signup successful! Please log in.");
         setFormState("login");
-        // console.log(response.data)
       } else if (formState === "reset") {
         if (!email) {
           setError("Email is required.");
@@ -78,7 +114,7 @@ const AuthForm: React.FC = () => {
 
         setLoading(true);
         await axios.post("/api/auth/restaurant-request-otp", { email });
-        setOtpTimer(60); // Start OTP timer (1 minute)
+        setOtpTimer(60);
         setFormState("otp");
         alert("OTP has been sent to your email.");
       } else if (formState === "otp") {
@@ -103,7 +139,9 @@ const AuthForm: React.FC = () => {
         setFormState("login");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "An error occurred. Please try again.");
+      setError(
+        err.response?.data?.message || "An error occurred. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -113,9 +151,8 @@ const AuthForm: React.FC = () => {
     setError(null);
     try {
       setLoading(true);
-      await axios.post("/api/auth/restaurant-request-otp", { email }); // Resend OTP
-      setOtpTimer(60); // Restart OTP timer
-    
+      await axios.post("/api/auth/restaurant-request-otp", { email });
+      setOtpTimer(60);
       alert("OTP has been resent to your email.");
     } catch (err: any) {
       setError(err.response?.data?.message || "Unable to resend OTP.");
@@ -143,7 +180,16 @@ const AuthForm: React.FC = () => {
         </p>
       </div>
       <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-        {(formState === "login" || formState === "reset" || formState === "otp" || formState === "new-password") && (
+        {(formState === "login" || formState === "signup") && (
+          <InputField
+            label="Role"
+            type="text"
+            id="role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          />
+        )}
+        {(formState === "login" || formState === "signup" || formState === "reset" || formState === "otp" || formState === "new-password") && (
           <InputField
             label="Email"
             type="email"
@@ -186,13 +232,6 @@ const AuthForm: React.FC = () => {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
-            <InputField
-          label="Email"
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
             <InputField
               label="Phone Number"
               type="text"
